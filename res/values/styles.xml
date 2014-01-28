@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+	
+	<!-- Application theme -->
+	<style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+		<item name="android:textViewStyle">@style/MyTextViewStyle</item>
+	</style>
+	
+	<!-- Style to use for ALL text views (including FontTextView) -->
+	<style name="MyTextViewStyle" parent="@android:style/Widget.Holo.Light.TextView">
+		<item name="android:textAppearance">@style/MyTextAppearance</item>
+		<item name="android:textSize">20sp</item>
+	</style>
+	
+	<!-- Text appearance to use for ALL text views (including FontTextView) -->
+	<style name="MyTextAppearance" parent="@android:style/TextAppearance.Holo">
+		<item name="font">aspergit</item>
+	</style>
+	
+	<!-- Some attributes we need in all example text views -->
+	<style name="Default">
+		<item name="android:layout_width">wrap_content</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:layout_marginTop">5dp</item>
+		<item name="android:layout_marginBottom">5dp</item>
+	</style>
+	
+	<style name="Bodoni" parent="Default">
+		<item name="font">bodoni</item>
+	</style>
+	
+	<style name="Bodoni.Bold">
+		<item name="android:textStyle">bold</item>
+	</style>
+	
+	<style name="Bodoni.Italic">
+		<item name="android:textStyle">italic</item>
+	</style>
+	
+</resources>

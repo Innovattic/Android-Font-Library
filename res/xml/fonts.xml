@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    App Fonts
+
+    This file lists the font families that can be used by the TypefaceManager.
+    Each entry consists of a family, various names that are supported by that
+    family, and up to four font files. The font files are listed in the order of
+    the styles which they support: regular, bold, italic and bold-italic. If
+    less than four styles are listed, then the styles with no associated font
+    file will be supported by the other font files listed, with bold-italic
+    mapping to bold and both bold and italic mapping to regular.
+    
+    Names are case-insensitive.
+-->
+<familyset>
+	
+	<!-- Font with all four styles defined -->
+	<family>
+		<nameset>
+			<name>aspergit</name>
+		</nameset>
+		<fileset>
+			<file>Aspergit.ttf</file>
+			<file>Aspergit Bold.ttf</file>
+			<file>Aspergit Italic.ttf</file>
+			<file>Aspergit Bold Italic.ttf</file>
+		</fileset>
+	</family>
+	
+	<!-- Font with only regular and bold defined -->
+	<family>
+		<nameset>
+			<name>bodoni</name>
+		</nameset>
+		<fileset>
+			<file>BodoniFLF-Roman.ttf</file>
+			<file>BodoniFLF-Bold.ttf</file>
+		</fileset>
+	</family>
+	
+</familyset>

@@ -9,11 +9,11 @@
 	<!-- Style to use for ALL text views (including FontTextView) -->
 	<style name="MyTextViewStyle" parent="@android:style/Widget.Holo.Light.TextView">
 		<item name="android:textAppearance">@style/MyTextAppearance</item>
-		<item name="android:textSize">20sp</item>
 	</style>
 	
 	<!-- Text appearance to use for ALL text views (including FontTextView) -->
 	<style name="MyTextAppearance" parent="@android:style/TextAppearance.Holo">
+		<item name="android:textSize">20sp</item>
 		<item name="font">aspergit</item>
 	</style>
 	

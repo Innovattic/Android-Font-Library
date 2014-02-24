@@ -14,6 +14,7 @@
 	<!-- Text appearance to use for ALL text views (including FontTextView) -->
 	<style name="MyTextAppearance" parent="@android:style/TextAppearance.Holo" tools:targetApi="13">
 		<item name="android:textSize">20sp</item>
+		<item name="android:textColor">#FF002DB3</item>
 		<item name="font">aspergit</item>
 	</style>
 	
@@ -35,6 +36,10 @@
 	
 	<style name="Bodoni.Italic">
 		<item name="android:textStyle">italic</item>
+	</style>
+	
+	<style name="ButtonStyle" parent="Default">
+		<item name="android:textAppearance">@style/MyTextAppearance</item>
 	</style>
 	
 </resources>

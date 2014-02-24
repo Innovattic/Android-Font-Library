@@ -34,4 +34,7 @@
 	<com.innovattic.view.FontTextView style="@style/Bodoni"
 		android:text="@string/txt_bold_italics" />
 	
+	<com.innovattic.view.FontButton style="@style/ButtonStyle"
+		android:text="@string/txt_button" />
+	
 </LinearLayout>

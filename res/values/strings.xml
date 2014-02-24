@@ -11,6 +11,7 @@
 	<string name="txt_style_bodoni_italic">A FontTextView with style Bodoni.Italic</string>
 	<string name="txt_italics"><i>Italics</i> when no <i>italic</i> font is present!</string>
 	<string name="txt_bold_italics">Then what about <b><i>Bold-Italic</i></b>?</string>
+	<string name="txt_button">Click me!</string>
 
 </resources>
 

@@ -11,11 +11,16 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import android.content.Context;
+import android.content.res.Resources.Theme;
+import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.graphics.Typeface;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.InflateException;
 import android.widget.TextView;
+
+import com.innovattic.example.fonts.R;
 
 public class TypefaceManager
 {
@@ -37,16 +42,22 @@ public class TypefaceManager
 	private static final byte ITALIC      = 4;
 	private static final byte BOLD_ITALIC = 8;
 	
+	/** The style map, used to map a missing style to another style. */
 	private static final Map<Byte, List<Byte>> styleMap;
+	/** The Typeface cache, keyed by their asset file name. */
+	private static final Map<String, Typeface> mCache = new HashMap<String, Typeface>();
 	
 	private final Context mContext;
-	private final Map<String, Font> mFonts;
-	private final Map<String, Typeface> mCache;
+	/** The xml file in which the fonts are defined. */
 	private final int mXmlResource;
+	/** The mapping of font names to Font objects as defined in the xml file. */
+	private final Map<String, Font> mFonts;
 	
 	static
 	{
 		// Initialize the style map
+		// The style map is used to determine which font style must be used if
+		// the requested style is not available.
 		styleMap = new HashMap<Byte, List<Byte>>();
 		styleMap.put(REGULAR, Arrays.asList(BOLD, ITALIC, BOLD_ITALIC));
 		styleMap.put(BOLD, Arrays.asList(REGULAR, BOLD_ITALIC, ITALIC));
@@ -110,7 +121,6 @@ public class TypefaceManager
 	private TypefaceManager(Context context, int xmlResource)
 	{
 		mFonts = new HashMap<String, Font>();
-		mCache = new HashMap<String, Typeface>();
 		this.mXmlResource = xmlResource;
 		mContext = context;
 		parse();
@@ -395,7 +405,7 @@ public class TypefaceManager
 			return new String[0];
 		}
 	}
-	
+
 	/**
 	 * Returns if all set bits in the needle are not set in the haystack. In
 	 * other words, if the haystack is missing all the bits from the needle,
@@ -409,6 +419,86 @@ public class TypefaceManager
 	private static boolean isMissing(byte needle, byte haystack)
 	{
 		return (haystack&needle) == 0;
+	}
+	
+	/**
+	 * Applies the font found in the attributes of the given AttributeSet or the
+	 * default style to the given target. Typically, the AttributeSet consists
+	 * of the attributes contained in the xml tag that defined the target. The
+	 * target can be any TextView or subclass thereof.
+	 * 
+	 * @param target A TextView, or any UI element that inherits from TextView.
+	 * @param attrs The attributes from the xml tag that defined the target.
+	 * @param defStyle The style that is applied to the target element. This may
+     *        either be an attribute resource, whose value will be retrieved
+     *        from the current theme, or an explicit style resource.
+	 */
+	public static void applyFont(TextView target, AttributeSet attrs, int defStyle)
+	{
+		// By default, the font is not changed
+		String font = null;
+		// By default, we apply a regular typeface
+		int style = Typeface.NORMAL;
+		
+		// First get the font attribute from the textAppearance:
+		Theme theme = target.getContext().getTheme();
+		// Get the text appearance that's currently in use
+		TypedArray a = theme.obtainStyledAttributes(attrs,
+			new int[] {android.R.attr.textAppearance}, defStyle, 0);
+		int textAppearanceStyle = a.getResourceId(0, -1);
+		a.recycle();
+		// Get the font and style defined in the text appearance
+		TypedArray appearance = null;
+		if (textAppearanceStyle != -1)
+			appearance = theme.obtainStyledAttributes(textAppearanceStyle,
+				R.styleable.Fonts);
+		if (appearance != null)
+		{
+			// Iterate over all attributes in 'Android-style'
+			// (similar to the implementation of the TextView constructor)
+			int n = appearance.getIndexCount();
+			for (int i = 0; i < n; i++)
+			{
+				int attr = appearance.getIndex(i);
+				switch (attr)
+				{
+					case R.styleable.Fonts_font:
+	                    font = appearance.getString(attr);
+	                    break;
+	                    
+					case R.styleable.Fonts_android_textStyle:
+						style = appearance.getInt(attr, Typeface.NORMAL);
+						break;
+				}
+			}
+			appearance.recycle();
+		}
+		
+		// Then get the font attribute from the FontTextView itself:
+		a = theme.obtainStyledAttributes(attrs,
+			R.styleable.Fonts, defStyle, 0);
+		int n = a.getIndexCount();
+		for (int i = 0; i < n; i++)
+		{
+			int attr = a.getIndex(i);
+			switch (attr)
+			{
+				case R.styleable.Fonts_font:
+					font = a.getString(attr);
+					break;
+					
+				case R.styleable.Fonts_android_textStyle:
+					style = a.getInt(attr, Typeface.NORMAL);
+					break;
+			}
+		}
+		a.recycle();
+		
+		// Now we have the font, apply it
+		if (font == null)
+			return;
+		getInstance().setTypeface(target, font, style);
+		a.recycle();
 	}
 
 }

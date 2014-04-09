@@ -22,7 +22,8 @@ public class FontChronometer extends Chronometer
 	public FontChronometer(Context context, AttributeSet attrs, int defStyle)
 	{
 		super(context, attrs, defStyle);
-		TypefaceManager.applyFont(this, attrs, defStyle);
+		if (!isInEditMode())
+			TypefaceManager.applyFont(this, attrs, defStyle);
 	}
 	
 }

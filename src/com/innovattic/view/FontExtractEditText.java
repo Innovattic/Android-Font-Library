@@ -24,7 +24,8 @@ public class FontExtractEditText extends ExtractEditText
 	public FontExtractEditText(Context context, AttributeSet attrs, int defStyle)
 	{
 		super(context, attrs, defStyle);
-		TypefaceManager.applyFont(this, attrs, defStyle);
+		if (!isInEditMode())
+			TypefaceManager.applyFont(this, attrs, defStyle);
 	}
 	
 }

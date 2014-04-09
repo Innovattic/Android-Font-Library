@@ -22,7 +22,8 @@ public class CheckedFontTextView extends CheckedTextView
 	public CheckedFontTextView(Context context, AttributeSet attrs, int defStyle)
 	{
 		super(context, attrs, defStyle);
-		TypefaceManager.applyFont(this, attrs, defStyle);
+		if (!isInEditMode())
+			TypefaceManager.applyFont(this, attrs, defStyle);
 	}
 	
 }

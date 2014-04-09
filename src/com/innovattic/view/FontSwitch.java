@@ -21,13 +21,15 @@ public class FontSwitch extends Switch
 		// The switchStyle is not available in android.R.attr, so let's call the
 		// super constructor from here and apply the font with that style.
 		super(context, attrs);
-		TypefaceManager.applyFont(this, attrs, 0);
+		if (!isInEditMode())
+			TypefaceManager.applyFont(this, attrs, 0);
 	}
 	
 	public FontSwitch(Context context, AttributeSet attrs, int defStyle)
 	{
 		super(context, attrs, defStyle);
-		TypefaceManager.applyFont(this, attrs, defStyle);
+		if (!isInEditMode())
+			TypefaceManager.applyFont(this, attrs, defStyle);
 	}
 	
 }

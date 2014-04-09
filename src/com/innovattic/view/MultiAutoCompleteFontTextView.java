@@ -22,7 +22,8 @@ public class MultiAutoCompleteFontTextView extends MultiAutoCompleteTextView
 	public MultiAutoCompleteFontTextView(Context context, AttributeSet attrs, int defStyle)
 	{
 		super(context, attrs, defStyle);
-		TypefaceManager.applyFont(this, attrs, defStyle);
+		if (!isInEditMode())
+			TypefaceManager.applyFont(this, attrs, defStyle);
 	}
 	
 }

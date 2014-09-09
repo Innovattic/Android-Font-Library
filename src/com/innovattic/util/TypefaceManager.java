@@ -10,10 +10,16 @@ import java.util.Map;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.Resources.Theme;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -422,10 +428,19 @@ public class TypefaceManager
 	}
 	
 	/**
-	 * Applies the font found in the attributes of the given AttributeSet or the
-	 * default style to the given target. Typically, the AttributeSet consists
-	 * of the attributes contained in the xml tag that defined the target. The
-	 * target can be any TextView or subclass thereof.
+	 * Applies the font and all related custom properties found in the
+	 * attributes of the given AttributeSet or the default style to the given
+	 * target. Typically, the AttributeSet consists of the attributes contained
+	 * in the xml tag that defined the target. The target can be any TextView or
+	 * subclass thereof. The read properties will be stored in an {@link
+	 * ExtraFontData} instance stored as a tag with id {@link
+	 * R.id#fonts_extra_data} in the target view. If an instance was already set
+	 * as a tag in the target view, it will be reused. All encountered
+	 * properties are overridden. The properties in the data holder can be
+	 * changed later, but it will depend on the nature of the property whether
+	 * or not this change will take effect. Properties that are applied at
+	 * initialization will not be applied when changed and properties that are
+	 * applied during the render cycle will be applied when changed.
 	 * 
 	 * @param target A TextView, or any UI element that inherits from TextView.
 	 * @param attrs The attributes from the xml tag that defined the target.
@@ -435,10 +450,22 @@ public class TypefaceManager
 	 */
 	public static void applyFont(TextView target, AttributeSet attrs, int defStyle)
 	{
-		// By default, the font is not changed
-		String font = null;
-		// By default, we apply a regular typeface
-		int style = Typeface.NORMAL;
+		if (target == null || target.isInEditMode())
+			return;
+		ExtraFontData data = (ExtraFontData)target.getTag(R.id.fonts_extra_data);
+		if (data == null) {
+			data = new ExtraFontData();
+			target.setTag(R.id.fonts_extra_data, data);
+			
+			// By default, the font is not changed
+			data.font = null;
+			// By default, we apply a regular typeface
+			data.style = Typeface.NORMAL;
+			// By default, we don't add a border around the text
+			data.borderWidth = 0;
+			// By default, *if* there is a border, it will be black
+			data.borderColor = Color.BLACK;
+		}
 		
 		// First get the font attribute from the textAppearance:
 		Theme theme = target.getContext().getTheme();
@@ -452,53 +479,127 @@ public class TypefaceManager
 		if (textAppearanceStyle != -1)
 			appearance = theme.obtainStyledAttributes(textAppearanceStyle,
 				R.styleable.Fonts);
-		if (appearance != null)
+		getAttributes(appearance, data);
+		
+		// Then get the font attribute from the FontTextView itself:
+		a = theme.obtainStyledAttributes(attrs, R.styleable.Fonts, defStyle, 0);
+		getAttributes(a, data);
+		
+		// Now we have the font, apply it
+		if (data.font != null) {
+			getInstance().setTypeface(target, data.font, data.style);
+		}
+	}
+	
+	/**
+	 * Fetches the font attributes from the given typed array and overrides all
+	 * properties in the given data holder that are present in the typed array.
+	 * 
+	 * @param a A TypedArray from which the attributes will be fetched. It will
+	 *        be recycled if not null.
+	 * @param data The data holder in which all read properties are stored.
+	 */
+	private static void getAttributes(final TypedArray a, final ExtraFontData data)
+	{
+		if (a == null)
+			return;
+		try
 		{
 			// Iterate over all attributes in 'Android-style'
 			// (similar to the implementation of the TextView constructor)
-			int n = appearance.getIndexCount();
+			int n = a.getIndexCount();
 			for (int i = 0; i < n; i++)
 			{
-				int attr = appearance.getIndex(i);
+				int attr = a.getIndex(i);
 				switch (attr)
 				{
 					case R.styleable.Fonts_font:
-	                    font = appearance.getString(attr);
+						data.font = a.getString(attr);
 	                    break;
 	                    
 					case R.styleable.Fonts_android_textStyle:
-						style = appearance.getInt(attr, Typeface.NORMAL);
+						data.style = a.getInt(attr, Typeface.NORMAL);
+						break;
+						
+					case R.styleable.Fonts_borderWidth:
+						data.borderWidth = a.getDimensionPixelSize(attr, 0);
+						break;
+						
+					case R.styleable.Fonts_borderColor:
+						data.borderColor = a.getColor(attr, Color.BLACK);
 						break;
 				}
 			}
-			appearance.recycle();
 		}
-		
-		// Then get the font attribute from the FontTextView itself:
-		a = theme.obtainStyledAttributes(attrs,
-			R.styleable.Fonts, defStyle, 0);
-		int n = a.getIndexCount();
-		for (int i = 0; i < n; i++)
+		finally
 		{
-			int attr = a.getIndex(i);
-			switch (attr)
-			{
-				case R.styleable.Fonts_font:
-					font = a.getString(attr);
-					break;
-					
-				case R.styleable.Fonts_android_textStyle:
-					style = a.getInt(attr, Typeface.NORMAL);
-					break;
-			}
+			a.recycle();
 		}
-		a.recycle();
-		
-		// Now we have the font, apply it
-		if (font == null)
+	}
+	
+	public static void onDrawHelper(Canvas canvas, TextView target, DrawCallback drawCallback)
+	{
+		if (target.isInEditMode())
 			return;
-		getInstance().setTypeface(target, font, style);
-		a.recycle();
+		final ExtraFontData data =
+			(ExtraFontData)target.getTag(R.id.fonts_extra_data);
+		if (data == null)
+			return;
+		
+		if (data.borderWidth > 0) {
+			final Paint paint = target.getPaint();
+	
+			// setup stroke
+			final Style oldStyle = paint.getStyle();
+			final ColorStateList oldTextColors = target.getTextColors();
+			final float oldStrokeWidth = paint.getStrokeWidth();
+			
+			target.setTextColor(data.borderColor);
+			paint.setStyle(Paint.Style.STROKE);
+			paint.setStrokeWidth(data.borderWidth);
+			callDrawCallback(drawCallback, canvas);
+			
+			target.setTextColor(oldTextColors);
+			paint.setStyle(oldStyle);
+			paint.setStrokeWidth(oldStrokeWidth);
+		}
 	}
 
+	/**
+	 * Calls the draw callback with the given canvas. Use this method instead of
+	 * calling it yourself, as lint is fooled by the method name 'onDraw' and
+	 * thinks we are intervening with the render cycle. With this method, we can
+	 * isolate the suppress lint annotation to the only warning we want to
+	 * suppress.
+	 * 
+	 * @param drawCallback
+	 * @param canvas
+	 */
+	@SuppressLint("WrongCall")
+	private static void callDrawCallback(DrawCallback drawCallback, Canvas canvas)
+	{
+		drawCallback.onDraw(canvas);
+	}
+	
+	/**
+	 * A data holder in which properties are stored that are not part of the
+	 * default text view attributes, but which are applicable to all custom Font
+	 * widgets. By storing this data holder in the corresponding view instance,
+	 * we can apply the properties at any time with a shared static method.
+	 * 
+	 * @author Jelle Fresen <jelle@innovattic.com>
+	 */
+	public static class ExtraFontData
+	{
+		public String font;
+		public int style;
+		public int borderWidth;
+		public int borderColor;
+	}
+	
+	public static interface DrawCallback
+	{
+		public void onDraw(Canvas canvas);
+	}
+	
 }

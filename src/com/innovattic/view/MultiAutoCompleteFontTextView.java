@@ -1,10 +1,13 @@
 package com.innovattic.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.widget.MultiAutoCompleteTextView;
 
 import com.innovattic.util.TypefaceManager;
+import com.innovattic.util.TypefaceManager.DrawCallback;
 
 public class MultiAutoCompleteFontTextView extends MultiAutoCompleteTextView
 {
@@ -24,6 +27,20 @@ public class MultiAutoCompleteFontTextView extends MultiAutoCompleteTextView
 		super(context, attrs, defStyle);
 		if (!isInEditMode())
 			TypefaceManager.applyFont(this, attrs, defStyle);
+	}
+	
+	private final DrawCallback drawCallback = new DrawCallback() {
+		@SuppressLint("WrongCall")
+		@Override public void onDraw(Canvas canvas) {
+			MultiAutoCompleteFontTextView.super.onDraw(canvas);
+		}
+	};
+	
+	@Override
+	protected void onDraw(Canvas canvas)
+	{
+		TypefaceManager.onDrawHelper(canvas, this, drawCallback);
+		super.onDraw(canvas);
 	}
 	
 }

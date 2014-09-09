@@ -1,10 +1,13 @@
 package com.innovattic.view;
 
-import com.innovattic.util.TypefaceManager;
-
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.widget.Button;
+
+import com.innovattic.util.TypefaceManager;
+import com.innovattic.util.TypefaceManager.DrawCallback;
 
 public class FontButton extends Button
 {
@@ -24,6 +27,20 @@ public class FontButton extends Button
 		super(context, attrs, defStyle);
 		if (!isInEditMode())
 			TypefaceManager.applyFont(this, attrs, defStyle);
+	}
+	
+	private final DrawCallback drawCallback = new DrawCallback() {
+		@SuppressLint("WrongCall")
+		@Override public void onDraw(Canvas canvas) {
+			FontButton.super.onDraw(canvas);
+		}
+	};
+	
+	@Override
+	protected void onDraw(Canvas canvas)
+	{
+		TypefaceManager.onDrawHelper(canvas, this, drawCallback);
+		super.onDraw(canvas);
 	}
 	
 }

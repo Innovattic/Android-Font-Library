@@ -472,8 +472,12 @@ public class TypefaceManager
 		// Get the text appearance that's currently in use
 		TypedArray a = theme.obtainStyledAttributes(attrs,
 			new int[] {android.R.attr.textAppearance}, defStyle, 0);
-		int textAppearanceStyle = a.getResourceId(0, -1);
-		a.recycle();
+		int textAppearanceStyle = -1;
+		try {
+			textAppearanceStyle = a.getResourceId(0, -1);
+		} finally {
+			a.recycle();
+		}
 		// Get the font and style defined in the text appearance
 		TypedArray appearance = null;
 		if (textAppearanceStyle != -1)

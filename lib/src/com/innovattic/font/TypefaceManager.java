@@ -1,5 +1,15 @@
 package com.innovattic.font;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -15,16 +25,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.InflateException;
 import android.widget.TextView;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class TypefaceManager
 {
@@ -96,9 +96,9 @@ public class TypefaceManager
 	
 	/**
 	 * Returns the singleton instance of the TypefaceManager. It will throw an
-	 * exception if it is called before {@link #initialize(android.content.Context, int)
+	 * exception if it is called before {@link #initialize(Context, int)
 	 * initialization}.
-	 *
+	 * 
 	 * @return The TypefaceManager
 	 */
 	public static TypefaceManager getInstance()
@@ -110,10 +110,10 @@ public class TypefaceManager
 				"TypefaceManager.");
 		return INSTANCE;
 	}
-
+	
 	/**
 	 * Initializes the typeface manager with the given xml font file.
-	 *
+	 * 
 	 * @param context A context with which the xml font file and the assets can
 	 *        be accessed.
 	 * @param xmlResource The resource id of an xml file that specifies the
@@ -129,12 +129,12 @@ public class TypefaceManager
 		mContext = context;
 		parse();
 	}
-
+	
 	/**
 	 * Returns the typeface identified by the given font name and style. The
 	 * font must be a name defined in any nameset in the font xml file. The
-	 * style must be one of the constants defined by {@link android.graphics.Typeface}.
-	 *
+	 * style must be one of the constants defined by {@link Typeface}.
+	 * 
 	 * @param name
 	 * @return
 	 */
@@ -142,12 +142,12 @@ public class TypefaceManager
 	{
 		return getTypeface(name, Typeface.NORMAL);
 	}
-
+	
 	/**
 	 * Returns the typeface identified by the given font name and style. The
 	 * font must be a name defined in any nameset in the font xml file. The
-	 * style must be one of the constants defined by {@link android.graphics.Typeface}.
-	 *
+	 * style must be one of the constants defined by {@link Typeface}.
+	 * 
 	 * @param name
 	 * @param style
 	 * @return
@@ -169,13 +169,13 @@ public class TypefaceManager
 		}
 		return mCache.get(font.styles.get(toInternalStyle(style)));
 	}
-
+	
 	/**
 	 * Convenience method to set the typeface of the target view to the font
 	 * identified by fontName. The text style that will be used is {@code
 	 * Typeface#NORMAL}. Returns false if the font wasn't found or couldn't be
 	 * loaded, returns true otherwise.
-	 *
+	 * 
 	 * @param target A TextView in which the font must be used.
 	 * @param fontName The name of the font. Must match a name defined in a name
 	 *        tag in the xml font file.
@@ -186,13 +186,13 @@ public class TypefaceManager
 	{
 		return setTypeface(target, fontName, Typeface.NORMAL);
 	}
-
+	
 	/**
 	 * Convenience method to set the typeface of the target view to the font
 	 * identified by fontName using the textStyle. The textStyle must be one of
 	 * the constants defined by {@code Typeface}. Returns false if the font
 	 * wasn't found or couldn't be loaded, returns true otherwise.
-	 *
+	 * 
 	 * @param target A TextView in which the font must be used.
 	 * @param fontName The name of the font. Must match a name defined in a name
 	 *        tag in the xml font file.
@@ -216,11 +216,11 @@ public class TypefaceManager
 		target.setTypeface(tf);
 		return true;
 	}
-
+	
 	/**
 	 * Parses the xml font file. After this method, {@link #mFonts} will contain
 	 * all fonts encountered in the xml font file for which at least one of the
-	 * defined font file(s) exist.
+	 * defined font file(s) exist. 
 	 */
 	private void parse()
 	{
@@ -229,14 +229,14 @@ public class TypefaceManager
 		{
 			String[] fontAssets = getAvailableFontfiles();
 			parser = mContext.getResources().getXml(mXmlResource);
-
+			
 			String tag;
 			Font font = null;
 			byte style = INVALID;
 			boolean isName = false;
 			boolean isFile = false;
 			int eventType = parser.getEventType();
-
+			
 			do
 			{
 				tag = parser.getName();
@@ -257,7 +257,7 @@ public class TypefaceManager
 						else if (tag.equals(TAG_FILE))
 							isFile = true;
 						break;
-
+						
 					case XmlPullParser.END_TAG:
 						if (tag.equals(TAG_FAMILY))
 						{
@@ -283,7 +283,7 @@ public class TypefaceManager
 						else if (tag.equals(TAG_FILESET))
 							style = INVALID;
 						break;
-
+						
 					case XmlPullParser.TEXT:
 						String text = parser.getText();
 						if (isName)
@@ -307,7 +307,7 @@ public class TypefaceManager
 						}
 				}
 				eventType = parser.next();
-
+				
 			} while (eventType != XmlPullParser.END_DOCUMENT);
 
 		}
@@ -325,12 +325,12 @@ public class TypefaceManager
 				parser.close();
 		}
 	}
-
+	
 	/**
 	 * Returns the style that comes after the given style in a fileset in the
 	 * font xml file. This order is defined by Android in the definition of the
 	 * system fonts and vendor fonts (see https://github.com/android/platform_frameworks_base/blob/master/data/fonts/vendor_fonts.xml).
-	 *
+	 * 
 	 * @param style
 	 * @return
 	 */
@@ -345,11 +345,11 @@ public class TypefaceManager
 			default:       return INVALID;
 		}
 	}
-
+	
 	/**
-	 * Converts a style constant from {@link android.graphics.Typeface} to a style constant from
+	 * Converts a style constant from {@link Typeface} to a style constant from
 	 * the {@link TypefaceManager}.
-	 *
+	 * 
 	 * @param typefaceStyle
 	 * @return
 	 */
@@ -364,13 +364,13 @@ public class TypefaceManager
 			default:                   return INVALID;
 		}
 	}
-
+	
 	/**
 	 * Adds style mappings for all styles that are not loaded in the given font.
 	 * A font may be defined without all four styles regular, bold, italic and
 	 * bold-italic. In that case, the missing styles will be mapped to the most
 	 * preferred style that is present.
-	 *
+	 * 
 	 * @param font
 	 */
 	private static void addMissingStyles(Font font)
@@ -379,7 +379,7 @@ public class TypefaceManager
 		Map<Byte, String> styles = font.styles;
 		for (byte style : styles.keySet())
 			availableStyles |= style;
-
+		
 		for (byte style : styleMap.keySet())
 			if (isMissing(style, availableStyles))
 				for (byte replacement : styleMap.get(style))
@@ -389,10 +389,10 @@ public class TypefaceManager
 						break;
 					}
 	}
-
+	
 	/**
 	 * Returns a list of all file names in the asset folder "fonts".
-	 *
+	 * 
 	 * @return
 	 */
 	private String[] getAvailableFontfiles()
@@ -414,7 +414,7 @@ public class TypefaceManager
 	 * Returns if all set bits in the needle are not set in the haystack. In
 	 * other words, if the haystack is missing all the bits from the needle,
 	 * this returns {@code true}.
-	 *
+	 * 
 	 * @param needle All bits set to 1 in this byte will be checked.
 	 * @param haystack The bits in this byte will be checked.
 	 * @return {@code true} iff all bits that need to be checked in the
@@ -424,7 +424,7 @@ public class TypefaceManager
 	{
 		return (haystack&needle) == 0;
 	}
-
+	
 	/**
 	 * Applies the font and all related custom properties found in the
 	 * attributes of the given AttributeSet or the default style to the given
@@ -439,7 +439,7 @@ public class TypefaceManager
 	 * or not this change will take effect. Properties that are applied at
 	 * initialization will not be applied when changed and properties that are
 	 * applied during the render cycle will be applied when changed.
-	 *
+	 * 
 	 * @param target A TextView, or any UI element that inherits from TextView.
 	 * @param attrs The attributes from the xml tag that defined the target.
 	 * @param defStyle The style that is applied to the target element. This may
@@ -454,7 +454,7 @@ public class TypefaceManager
 		if (data == null) {
 			data = new ExtraFontData();
 			target.setTag(R.id.fonts_extra_data, data);
-
+			
 			// By default, the font is not changed
 			data.font = null;
 			// By default, we apply a regular typeface
@@ -464,7 +464,7 @@ public class TypefaceManager
 			// By default, *if* there is a border, it will be black
 			data.borderColor = Color.BLACK;
 		}
-
+		
 		// First get the font attribute from the textAppearance:
 		Theme theme = target.getContext().getTheme();
 		// Get the text appearance that's currently in use
@@ -482,21 +482,21 @@ public class TypefaceManager
 			appearance = theme.obtainStyledAttributes(textAppearanceStyle,
 				R.styleable.Fonts);
 		getAttributes(appearance, data);
-
+		
 		// Then get the font attribute from the FontTextView itself:
 		a = theme.obtainStyledAttributes(attrs, R.styleable.Fonts, defStyle, 0);
 		getAttributes(a, data);
-
+		
 		// Now we have the font, apply it
 		if (data.font != null) {
 			getInstance().setTypeface(target, data.font, data.style);
 		}
 	}
-
+	
 	/**
 	 * Fetches the font attributes from the given typed array and overrides all
 	 * properties in the given data holder that are present in the typed array.
-	 *
+	 * 
 	 * @param a A TypedArray from which the attributes will be fetched. It will
 	 *        be recycled if not null.
 	 * @param data The data holder in which all read properties are stored.
@@ -518,15 +518,15 @@ public class TypefaceManager
 					case R.styleable.Fonts_font:
 						data.font = a.getString(attr);
 	                    break;
-
+	                    
 					case R.styleable.Fonts_android_textStyle:
 						data.style = a.getInt(attr, Typeface.NORMAL);
 						break;
-
+						
 					case R.styleable.Fonts_borderWidth:
 						data.borderWidth = a.getDimensionPixelSize(attr, 0);
 						break;
-
+						
 					case R.styleable.Fonts_borderColor:
 						data.borderColor = a.getColor(attr, Color.BLACK);
 						break;
@@ -538,7 +538,7 @@ public class TypefaceManager
 			a.recycle();
 		}
 	}
-
+	
 	public static void onDrawHelper(Canvas canvas, TextView target, DrawCallback drawCallback)
 	{
 		if (target.isInEditMode())
@@ -547,17 +547,17 @@ public class TypefaceManager
 			(ExtraFontData)target.getTag(R.id.fonts_extra_data);
 		if (data == null)
 			return;
-
+		
 		if (data.borderWidth > 0) {
 			final Paint paint = target.getPaint();
-
+	
 			// setup stroke
 			final Style oldStyle = paint.getStyle();
 			final ColorStateList oldTextColors = target.getTextColors();
 			final float oldStrokeWidth = paint.getStrokeWidth();
-
+			
 			target.setTextColor(data.borderColor);
-			paint.setStyle(Style.STROKE);
+			paint.setStyle(Paint.Style.STROKE);
 			paint.setStrokeWidth(data.borderWidth);
 			callDrawCallback(drawCallback, canvas);
 			
@@ -566,7 +566,7 @@ public class TypefaceManager
 			paint.setStrokeWidth(oldStrokeWidth);
 		}
 	}
-
+	
 	/**
 	 * Calls the draw callback with the given canvas. Use this method instead of
 	 * calling it yourself, as lint is fooled by the method name 'onDraw' and
@@ -603,5 +603,5 @@ public class TypefaceManager
 	{
 		public void onDraw(Canvas canvas);
 	}
-	
+
 }

@@ -75,4 +75,5 @@ application project.
 #### Android Studio
 In the case of an Android Studio project, add the library module by editing your
 settings.gradle file in your project root to also include the module
-`:<submodule>:lib` and then hit the button 'Sync Project with Gradle Files'.
+`:<submodule>:lib`, hit the button 'Sync Project with Gradle Files' and then add
+the library as a Module Dependency to your app module.

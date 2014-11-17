@@ -27,10 +27,10 @@
 			<name>aspergit</name>
 		</nameset>
 		<fileset>
-			<file>Aspergit.ttf</file>
-			<file>Aspergit Bold.ttf</file>
-			<file>Aspergit Italic.ttf</file>
-			<file>Aspergit Bold Italic.ttf</file>
+			<file>aspergit/Aspergit.ttf</file>
+			<file>aspergit/Aspergit Bold.ttf</file>
+			<file>aspergit/Aspergit Italic.ttf</file>
+			<file>aspergit/Aspergit Bold Italic.ttf</file>
 		</fileset>
 	</family>
 	

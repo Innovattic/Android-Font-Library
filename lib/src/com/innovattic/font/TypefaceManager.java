@@ -1,17 +1,21 @@
 package com.innovattic.font;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.content.res.ColorStateList;
 import android.content.res.Resources.Theme;
 import android.content.res.TypedArray;
@@ -227,7 +231,7 @@ public class TypefaceManager
 		XmlResourceParser parser = null;
 		try
 		{
-			String[] fontAssets = getAvailableFontfiles();
+			String[] fontAssets = getAvailableFontFiles();
 			parser = mContext.getResources().getXml(mXmlResource);
 			
 			String tag;
@@ -391,15 +395,43 @@ public class TypefaceManager
 	}
 	
 	/**
-	 * Returns a list of all file names in the asset folder "fonts".
+	 * Returns a list of all file names in the asset folder "fonts", recursively.
 	 * 
 	 * @return
 	 */
-	private String[] getAvailableFontfiles()
+	private String[] getAvailableFontFiles()
 	{
+		// Note that empty directories are filtered during the build process. Thus, when listing
+		// assets of a certain path, an empty list means the path is a file and a non-empty list
+		// means the path is a directory.
 		try
 		{
-			String[] fontAssets = mContext.getAssets().list("fonts");
+			final String ROOT = "fonts";
+			final String SLASH = File.separator;
+
+			// Initialize variables
+			final List<String> fontAssetList = new ArrayList<String>();
+			final AssetManager assets = mContext.getAssets();
+			final Queue<String> q = new LinkedList<String>();
+
+			// Recursively find all files (using bfs to avoid recursive calls)
+			String[] list = assets.list(ROOT);
+			addToQueue(q, list, "");
+			while (!q.isEmpty()) {
+				final String path = q.remove();
+				// file or dir?
+				list = assets.list(ROOT + SLASH + path);
+				if (list.length == 0) {
+					// File (therefor, a potential font)
+					fontAssetList.add(path);
+				} else {
+					// Dir (therefor, potentially contains fonts)
+					addToQueue(q, list, path + SLASH);
+				}
+			}
+
+			// Post process all found files
+			String[] fontAssets = fontAssetList.toArray(new String[fontAssetList.size()]);
 			Arrays.sort(fontAssets);
 			return fontAssets;
 		}
@@ -407,6 +439,21 @@ public class TypefaceManager
 		{
 			Log.e(TAG, "Couldn't access assets; fonts are not available");
 			return new String[0];
+		}
+	}
+
+	/**
+	 * Adds the given paths to the queue, prefixing them with their origin.
+	 *
+	 * @param q The queue to which to add the paths
+	 * @param paths A list of paths that will be added to the queue
+	 * @param relativeTo The origin to which the paths are relative. Must include the file separator
+	 *        ({@link File#separator}) at the end.
+	 */
+	private void addToQueue(final Queue<String> q, final String[] paths, final String relativeTo)
+	{
+		for (String child : paths) {
+			q.add(relativeTo + child);
 		}
 	}
 

@@ -190,6 +190,30 @@ public class TypefaceManager
 	{
 		return setTypeface(target, fontName, Typeface.NORMAL);
 	}
+
+	/**
+	 * Set the text style of the given TextView. The text style must be one of the constants defined
+	 * in {@link Typeface}. If the target had a custom font applied (as specified in the {@link
+	 * ExtraFontData}), that font will be used to find the appropriate text style.
+	 *
+	 * @param target A TextView in which the text style must be set.
+	 * @param textStyle A text style: {@link Typeface#NORMAL}, {@link Typeface#BOLD}, {@link
+	 *        Typeface#ITALIC} or {@link Typeface#BOLD_ITALIC}.
+	 * @return {@code true} if the text style was set in the target, {@code false} otherwise.
+	 */
+	public boolean setTextStyle(TextView target, int textStyle)
+	{
+		ExtraFontData data = getFontData(target);
+		data.style = textStyle;
+		if (data.font == null) {
+			// Default Android font
+			target.setTypeface(target.getTypeface(), textStyle);
+			return true;
+		} else {
+			// Custom font
+			return setTypeface(target, data.font, textStyle);
+		}
+	}
 	
 	/**
 	 * Convenience method to set the typeface of the target view to the font

@@ -210,10 +210,14 @@ public class TypefaceManager
 		try
 		{
 			tf = getTypeface(fontName, textStyle);
+			// If the font was retrieved successfully, store it in the data.
+			ExtraFontData data = getFontData(target);
+			data.font = fontName;
+			data.style = textStyle;
 		}
 		catch (Exception e)
 		{
-			Log.e(TAG, "Could not get typeface "+fontName);
+			Log.e(TAG, "Could not get typeface "+fontName+" with style "+textStyle);
 			return false;
 		}
 

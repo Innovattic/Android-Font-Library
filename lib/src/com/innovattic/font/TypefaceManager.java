@@ -497,20 +497,7 @@ public class TypefaceManager
 	{
 		if (target == null || target.isInEditMode())
 			return;
-		ExtraFontData data = (ExtraFontData)target.getTag(R.id.fonts_extra_data);
-		if (data == null) {
-			data = new ExtraFontData();
-			target.setTag(R.id.fonts_extra_data, data);
-			
-			// By default, the font is not changed
-			data.font = null;
-			// By default, we apply a regular typeface
-			data.style = Typeface.NORMAL;
-			// By default, we don't add a border around the text
-			data.borderWidth = 0;
-			// By default, *if* there is a border, it will be black
-			data.borderColor = Color.BLACK;
-		}
+		ExtraFontData data = getFontData(target);
 		
 		// First get the font attribute from the textAppearance:
 		Theme theme = target.getContext().getTheme();
@@ -590,8 +577,7 @@ public class TypefaceManager
 	{
 		if (target.isInEditMode())
 			return;
-		final ExtraFontData data =
-			(ExtraFontData)target.getTag(R.id.fonts_extra_data);
+		final ExtraFontData data = getFontData(target, false);
 		if (data == null)
 			return;
 		
@@ -644,6 +630,34 @@ public class TypefaceManager
 		public int style;
 		public int borderWidth;
 		public int borderColor;
+
+		public ExtraFontData(TextView target)
+		{
+			// By default, the font is not changed
+			font = null;
+			// By default, we apply a regular typeface
+			style = Typeface.NORMAL;
+			// By default, we don't add a border around the text
+			borderWidth = 0;
+			// By default, *if* there is a border, it will be black
+			borderColor = Color.BLACK;
+			// Store the data in the TextView
+			target.setTag(R.id.fonts_extra_data, this);
+		}
+	}
+
+	public static ExtraFontData getFontData(TextView target)
+	{
+		return getFontData(target, true);
+	}
+
+	public static ExtraFontData getFontData(TextView target, boolean createIfMissing)
+	{
+		ExtraFontData data = (ExtraFontData)target.getTag(R.id.fonts_extra_data);
+		if (data == null && createIfMissing) {
+			data = new ExtraFontData(target);
+		}
+		return data;
 	}
 	
 	public static interface DrawCallback

@@ -575,23 +575,14 @@ public class TypefaceManager
 			for (int i = 0; i < n; i++)
 			{
 				int attr = a.getIndex(i);
-				switch (attr)
-				{
-					case R.styleable.Fonts_font:
-						data.font = a.getString(attr);
-	                    break;
-	                    
-					case R.styleable.Fonts_android_textStyle:
-						data.style = a.getInt(attr, Typeface.NORMAL);
-						break;
-						
-					case R.styleable.Fonts_borderWidth:
-						data.borderWidth = a.getDimensionPixelSize(attr, 0);
-						break;
-						
-					case R.styleable.Fonts_borderColor:
-						data.borderColor = a.getColor(attr, Color.BLACK);
-						break;
+				if (attr == R.styleable.Fonts_font) {
+					data.font = a.getString(attr);
+				} else if (attr == R.styleable.Fonts_android_textStyle) {
+					data.style = a.getInt(attr, Typeface.NORMAL);
+				} else if (attr == R.styleable.Fonts_borderWidth) {
+					data.borderWidth = a.getDimensionPixelSize(attr, 0);
+				} else if (attr == R.styleable.Fonts_borderColor) {
+					data.borderColor = a.getColor(attr, Color.BLACK);
 				}
 			}
 		}

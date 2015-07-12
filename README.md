@@ -1,4 +1,4 @@
-Android-Font-Integration
+Android-Font-Library
 ========================
 
 This is a library that makes it easy for you to add custom fonts to your Android
@@ -65,15 +65,9 @@ Adding the library to your project
 There are many ways to accomplish this. You can checkout the library at any
 place on your machine and then reference to the library. That is probably the
 easiest. You can also include this library as a submodule in your application
-project, this works both for Eclipse projects and Android Studio projects.
+project.
 
-#### Eclipse
-In the case of an Eclipse project, import the project in `<submodule>/lib` as an
-existing project in Eclipse, then add it as an android library to your
-application project.
-
-#### Android Studio
-In the case of an Android Studio project, add the library module by editing your
-settings.gradle file in your project root to also include the module
-`:<submodule>:lib`, hit the button 'Sync Project with Gradle Files' and then add
-the library as a Module Dependency to your app module.
+Add the library module by editing your settings.gradle file in your project root
+to also include the module `:<submodule>:lib`, hit the button 'Sync Project with
+Gradle Files' and then add the library as a Module Dependency to your app
+module.

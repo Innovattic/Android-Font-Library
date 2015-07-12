@@ -15,7 +15,7 @@
 	<style name="MyTextAppearance" parent="@android:style/TextAppearance.Holo" tools:targetApi="13">
 		<item name="android:textSize">20sp</item>
 		<item name="android:textColor">#FF002DB3</item>
-		<item name="font">aspergit</item>
+		<item name="flFont">aspergit</item>
 	</style>
 	
 	<!-- Some attributes we need in all example text views -->
@@ -27,7 +27,7 @@
 	</style>
 	
 	<style name="Bodoni" parent="Default">
-		<item name="font">bodoni</item>
+		<item name="flFont">bodoni</item>
 	</style>
 	
 	<style name="Bodoni.Bold">

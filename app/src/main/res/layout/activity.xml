@@ -16,7 +16,7 @@
 		android:text="@string/txt_style_in_layout_xml" />
 	
 	<com.innovattic.font.FontTextView style="@style/Default"
-		app:font="bodoni"
+		app:flFont="bodoni"
 		android:text="@string/txt_font_in_layout_xml" />
 	
 	<com.innovattic.font.FontTextView style="@style/Bodoni"

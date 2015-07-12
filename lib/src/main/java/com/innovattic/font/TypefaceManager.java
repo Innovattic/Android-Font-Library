@@ -507,7 +507,7 @@ public class TypefaceManager
 	 * in the xml tag that defined the target. The target can be any TextView or
 	 * subclass thereof. The read properties will be stored in an {@link
 	 * ExtraFontData} instance stored as a tag with id {@link
-	 * R.id#fonts_extra_data} in the target view. If an instance was already set
+	 * R.id#flFontsExtraData} in the target view. If an instance was already set
 	 * as a tag in the target view, it will be reused. All encountered
 	 * properties are overridden. The properties in the data holder can be
 	 * changed later, but it will depend on the nature of the property whether
@@ -575,13 +575,13 @@ public class TypefaceManager
 			for (int i = 0; i < n; i++)
 			{
 				int attr = a.getIndex(i);
-				if (attr == R.styleable.Fonts_font) {
+				if (attr == R.styleable.Fonts_flFont) {
 					data.font = a.getString(attr);
 				} else if (attr == R.styleable.Fonts_android_textStyle) {
 					data.style = a.getInt(attr, Typeface.NORMAL);
-				} else if (attr == R.styleable.Fonts_borderWidth) {
+				} else if (attr == R.styleable.Fonts_flBorderWidth) {
 					data.borderWidth = a.getDimensionPixelSize(attr, 0);
-				} else if (attr == R.styleable.Fonts_borderColor) {
+				} else if (attr == R.styleable.Fonts_flBorderColor) {
 					data.borderColor = a.getColor(attr, Color.BLACK);
 				}
 			}
@@ -661,7 +661,7 @@ public class TypefaceManager
 			// By default, *if* there is a border, it will be black
 			borderColor = Color.BLACK;
 			// Store the data in the TextView
-			target.setTag(R.id.fonts_extra_data, this);
+			target.setTag(R.id.flFontsExtraData, this);
 		}
 	}
 
@@ -672,7 +672,7 @@ public class TypefaceManager
 
 	public static ExtraFontData getFontData(TextView target, boolean createIfMissing)
 	{
-		ExtraFontData data = (ExtraFontData)target.getTag(R.id.fonts_extra_data);
+		ExtraFontData data = (ExtraFontData)target.getTag(R.id.flFontsExtraData);
 		if (data == null && createIfMissing) {
 			data = new ExtraFontData(target);
 		}

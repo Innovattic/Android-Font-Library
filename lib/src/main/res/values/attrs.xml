@@ -2,12 +2,12 @@
 <resources>
 
 	<declare-styleable name="Fonts">
-		<attr name="font" format="string|reference" />
+		<attr name="flFont" format="string|reference" />
 		<attr name="android:textStyle" />
-		<attr name="borderColor" format="color|reference" />
-		<attr name="borderWidth" format="dimension|reference" />
+		<attr name="flBorderColor" format="color|reference" />
+		<attr name="flBorderWidth" format="dimension|reference" />
 	</declare-styleable>
 	
-	<item type="id" name="fonts_extra_data" />
+	<item type="id" name="flFontsExtraData" />
 	
 </resources>

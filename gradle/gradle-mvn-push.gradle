@@ -1,0 +1,191 @@
+/*
+ * Copyright 2013 Chris Banes
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+apply plugin: 'maven'
+apply plugin: 'signing'
+
+def isReleaseBuild() {
+    return VERSION_NAME.contains("SNAPSHOT") == false
+}
+
+afterEvaluate { project ->
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                pom.groupId = GROUP
+                pom.artifactId = ARTIFACT
+                pom.version = VERSION_NAME
+
+                repository(url: getReleaseRepositoryUrl()) {
+                    authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
+                }
+                snapshotRepository(url: getSnapshotRepositoryUrl()) {
+                    authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
+                }
+
+                pom.project {
+                    name POM_NAME
+                    packaging POM_PACKAGING
+                    description POM_DESCRIPTION
+                    url POM_URL
+
+                    scm {
+                        url POM_SCM_URL
+                        connection POM_SCM_CONNECTION
+                        developerConnection POM_SCM_DEV_CONNECTION
+                    }
+
+                    licenses {
+                        license {
+                            name POM_LICENCE_NAME
+                            url POM_LICENCE_URL
+                            distribution POM_LICENCE_DIST
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id POM_DEVELOPER_ID
+                            name POM_DEVELOPER_NAME
+                        }
+                    }
+                }
+
+                final String name = getProvidedConfigurationName();
+                if (name != null && project.configurations.findByName(name) != null) {
+                    final providedConfiguration = project.configurations.getByName(name);
+                    pom.whenConfigured { pom ->
+                        DependencySet providedDependencies = providedConfiguration.dependencies;
+                        Set toRemove = []
+                        pom.dependencies.each { pomDependency ->
+                            Closure matcher = { Dependency dependency ->
+                                dependency.group.equals(pomDependency.groupId) &&
+                                dependency.name.equals(pomDependency.artifactId)
+                            }
+                            if (providedDependencies.find(matcher) != null) {
+                                toRemove.add(pomDependency)
+                            }
+                        }
+                        pom.dependencies.removeAll(toRemove)
+                    }
+                }
+            }
+        }
+    }
+
+    signing {
+        required { isReleaseBuild() && gradle.taskGraph.hasTask("uploadArchives") }
+        sign configurations.archives
+    }
+
+    task androidJavadocs(type: Javadoc, dependsOn: compileReleaseSources) {
+        // Java check taken from https://github.com/JakeWharton/RxBinding/blob/master/gradle/gradle-mvn-push.gradle
+        if (JavaVersion.current().isJava8Compatible()) {
+            // Disable the crazy super-strict doclint tool in Java 8
+            options.addStringOption('Xdoclint:none', '-quiet')
+        }
+
+        // Process the manually written source files (excludes generated files like R.java)
+        source = android.sourceSets.main.java.sourceFiles
+        // Add the android platform (android.jar) to the classpath
+        classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+        // Add all dependencies to the javadoc classpath
+        // Adds all dependencies of all flavors (will probably break with multiple flavors)
+        final Closure release = { it.buildType.name.equals("release") }
+        android.libraryVariants.matching(release).all {
+            // Add the dependencies of the flavor:
+            classpath += files(it.javaCompile.classpath.files)
+            // And THEN add our compiled source files (including compiled generated source files
+            // like R.java). Will not work the other way around because of hidden android classes
+            // (such as android.support.v4.widget.DrawerLayoutImpl).
+            classpath += files(it.javaCompile.destinationDir)
+        }
+    }
+
+    task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
+        classifier = 'javadoc'
+        from androidJavadocs.destinationDir
+    }
+
+    task androidSourcesJar(type: Jar, dependsOn: compileReleaseSources) {
+        classifier = 'sources'
+        from android.sourceSets.main.java.sourceFiles
+    }
+
+    artifacts {
+        archives androidSourcesJar
+        archives androidJavadocsJar
+    }
+}
+
+def String getReleaseRepositoryUrl() {
+    return resolveProperty('RELEASE_REPOSITORY_URL', '')
+}
+
+def String getSnapshotRepositoryUrl() {
+    return resolveProperty('SNAPSHOT_REPOSITORY_URL', '')
+}
+
+def String getRepositoryUsername() {
+    return resolveProperty('SONATYPE_NEXUS_USERNAME', '')
+}
+
+def String getRepositoryPassword() {
+    return resolveProperty('SONATYPE_NEXUS_PASSWORD', '')
+}
+
+def String getProvidedConfigurationName() {
+    return resolveProperty('PROVIDED_CONFIGURATION', null)
+}
+
+/**
+ * Retrieves the value of a gradle property, supporting indirect property references. Indirect
+ * referencing works by convention, if a property is called propertyName you can define a boolean
+ * property with the name propertyName.indirect. If that is set to true, the value of propertyName
+ * will be treated as a reference to another property, which in turn can be an indirect property
+ * using the same convention. An exception is thrown when a loop is detected.
+ *
+ * @param name A property name
+ * @param defaultValue The value to return if the property cannot be found
+ * @return The value, following all indirect references
+ */
+def String resolveProperty(String name, final String defaultValue=null) {
+    final String originalName = name
+    final List<String> resolvedNames = []
+    String value = name
+    boolean indirect = true
+    while (indirect) {
+        name = value
+        if (resolvedNames.contains(name)) {
+            throw new InvalidUserDataException('Property ' + originalName +
+                    ' contains an indirect reference loop ')
+        }
+        if (hasProperty(name)) {
+            resolvedNames.add(name)
+            value = getProperty(name)
+            if (hasProperty(name + '.indirect')) {
+                indirect = Boolean.parseBoolean(getProperty(name + '.indirect'))
+            } else {
+                indirect = false
+            }
+        } else {
+            return defaultValue
+        }
+    }
+    return value;
+}

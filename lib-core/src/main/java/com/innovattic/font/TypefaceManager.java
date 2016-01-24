@@ -30,6 +30,8 @@ import android.util.Log;
 import android.view.InflateException;
 import android.widget.TextView;
 
+import com.innovattic.font.core.R;
+
 public class TypefaceManager
 {
 	

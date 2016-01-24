@@ -5,13 +5,13 @@ repositories {
 }
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion "21.1.2"
+    compileSdkVersion Integer.valueOf(COMPILE_SDK)
+    buildToolsVersion BUILD_TOOLS_VERSION
 
     defaultConfig {
         applicationId "com.innovattic.example.fonts"
         minSdkVersion 14
-        targetSdkVersion 19
+        targetSdkVersion Integer.valueOf(TARGET_SDK)
         versionCode 2
         versionName "1.0"
     }

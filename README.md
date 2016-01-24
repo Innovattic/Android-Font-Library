@@ -18,7 +18,7 @@ Usage
 -----
 
 To use the library, add it to your project as a gradle dependency, specify your
-[font xml file](app/src/main/res/xml/fonts.xml), call `TypefaceManager.init()`
+[font xml file](sample/src/main/res/xml/fonts.xml), call `TypefaceManager.init()`
 (typically in your Application class' `onCreate`) and use any of the font aware
 TextViews.
 

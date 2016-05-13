@@ -16,6 +16,15 @@
             <option value="$PROJECT_DIR$/sample" />
           </set>
         </option>
+        <option name="myModules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/lib-core" />
+            <option value="$PROJECT_DIR$/lib-native" />
+            <option value="$PROJECT_DIR$/lib-support" />
+            <option value="$PROJECT_DIR$/sample" />
+          </set>
+        </option>
       </GradleProjectSettings>
     </option>
   </component>

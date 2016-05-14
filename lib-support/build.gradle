@@ -20,10 +20,22 @@ android {
     }
 }
 
+configurations {
+    // Add provided configuration for use with aar's
+    providedAar
+    // Add the provided aar dependencies to most other configuration by means of inheritance
+    compile.extendsFrom providedAar
+    // But exclude the provided aar dependencies from the default configuration
+    // Note that for now, only maven dependencies are supported
+    providedAar.dependencies.all { dep ->
+        configurations.default.exclude group: dep.group, module: dep.name
+    }
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':lib-core')
-    provided 'com.android.support:appcompat-v7:23.1.1'
+    providedAar 'com.android.support:appcompat-v7:23.1.1'
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

@@ -4,14 +4,12 @@ import android.app.Application;
 
 import com.innovattic.font.TypefaceManager;
 
-public class App extends Application
-{
-	
+public class App extends Application {
+
 	@Override
-	public void onCreate()
-	{
+	public void onCreate() {
 		super.onCreate();
 		TypefaceManager.initialize(this, R.xml.fonts);
 	}
-	
+
 }

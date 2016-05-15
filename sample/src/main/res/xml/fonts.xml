@@ -20,7 +20,7 @@
 	Names are case-insensitive.
 -->
 <familyset>
-	
+
 	<!-- Font with all four styles defined -->
 	<family>
 		<nameset>
@@ -33,7 +33,7 @@
 			<file>aspergit/Aspergit Bold Italic.ttf</file>
 		</fileset>
 	</family>
-	
+
 	<!-- Font with only regular and bold defined -->
 	<family>
 		<nameset>
@@ -44,5 +44,5 @@
 			<file>BodoniFLF-Bold.ttf</file>
 		</fileset>
 	</family>
-	
+
 </familyset>

@@ -8,38 +8,34 @@ import android.widget.MultiAutoCompleteTextView;
 
 import com.innovattic.font.TypefaceManager.DrawCallback;
 
-public class MultiAutoCompleteFontTextView extends MultiAutoCompleteTextView
-{
-	
-	public MultiAutoCompleteFontTextView(Context context)
-	{
+public class MultiAutoCompleteFontTextView extends MultiAutoCompleteTextView {
+
+	public MultiAutoCompleteFontTextView(Context context) {
 		this(context, null);
 	}
-	
-	public MultiAutoCompleteFontTextView(Context context, AttributeSet attrs)
-	{
+
+	public MultiAutoCompleteFontTextView(Context context, AttributeSet attrs) {
 		this(context, attrs, android.R.attr.autoCompleteTextViewStyle);
 	}
-	
-	public MultiAutoCompleteFontTextView(Context context, AttributeSet attrs, int defStyle)
-	{
+
+	public MultiAutoCompleteFontTextView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-		if (!isInEditMode())
+		if (!isInEditMode()) {
 			TypefaceManager.applyFont(this, attrs, defStyle);
+		}
 	}
-	
+
 	private final DrawCallback drawCallback = new DrawCallback() {
 		@SuppressLint("WrongCall")
 		@Override public void onDraw(Canvas canvas) {
 			MultiAutoCompleteFontTextView.super.onDraw(canvas);
 		}
 	};
-	
+
 	@Override
-	protected void onDraw(Canvas canvas)
-	{
+	protected void onDraw(Canvas canvas) {
 		TypefaceManager.onDrawHelper(canvas, this, drawCallback);
 		super.onDraw(canvas);
 	}
-	
+
 }

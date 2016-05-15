@@ -2,7 +2,7 @@
 <resources>
 
 	<string name="app_name">Font Example</string>
-	
+
 	<string name="txt_no_style">A FontTextView without style</string>
 	<string name="txt_style_in_layout_xml">Applying a style in the layout XML</string>
 	<string name="txt_font_in_layout_xml">Applying a font in the layout XML</string>

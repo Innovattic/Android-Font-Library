@@ -8,38 +8,34 @@ import android.widget.CheckBox;
 
 import com.innovattic.font.TypefaceManager.DrawCallback;
 
-public class FontCheckBox extends CheckBox
-{
-	
-	public FontCheckBox(Context context)
-	{
+public class FontCheckBox extends CheckBox {
+
+	public FontCheckBox(Context context) {
 		this(context, null);
 	}
-	
-	public FontCheckBox(Context context, AttributeSet attrs)
-	{
+
+	public FontCheckBox(Context context, AttributeSet attrs) {
 		this(context, attrs, android.R.attr.checkboxStyle);
 	}
-	
-	public FontCheckBox(Context context, AttributeSet attrs, int defStyle)
-	{
+
+	public FontCheckBox(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-		if (!isInEditMode())
+		if (!isInEditMode()) {
 			TypefaceManager.applyFont(this, attrs, defStyle);
+		}
 	}
-	
+
 	private final DrawCallback drawCallback = new DrawCallback() {
 		@SuppressLint("WrongCall")
 		@Override public void onDraw(Canvas canvas) {
 			FontCheckBox.super.onDraw(canvas);
 		}
 	};
-	
+
 	@Override
-	protected void onDraw(Canvas canvas)
-	{
+	protected void onDraw(Canvas canvas) {
 		TypefaceManager.onDrawHelper(canvas, this, drawCallback);
 		super.onDraw(canvas);
 	}
-	
+
 }

@@ -8,38 +8,34 @@ import android.util.AttributeSet;
 
 import com.innovattic.font.TypefaceManager.DrawCallback;
 
-public class FontTextView extends AppCompatTextView
-{
-	
-	public FontTextView(Context context)
-	{
+public class FontTextView extends AppCompatTextView {
+
+	public FontTextView(Context context) {
 		this(context, null);
 	}
-	
-	public FontTextView(Context context, AttributeSet attrs)
-	{
+
+	public FontTextView(Context context, AttributeSet attrs) {
 		this(context, attrs, android.R.attr.textViewStyle);
 	}
-	
-	public FontTextView(Context context, AttributeSet attrs, int defStyle)
-	{
+
+	public FontTextView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-		if (!isInEditMode())
+		if (!isInEditMode()) {
 			TypefaceManager.applyFont(this, attrs, defStyle);
+		}
 	}
-	
+
 	private final DrawCallback drawCallback = new DrawCallback() {
 		@SuppressLint("WrongCall")
 		@Override public void onDraw(Canvas canvas) {
 			FontTextView.super.onDraw(canvas);
 		}
 	};
-	
+
 	@Override
-	protected void onDraw(Canvas canvas)
-	{
+	protected void onDraw(Canvas canvas) {
 		TypefaceManager.onDrawHelper(canvas, this, drawCallback);
 		super.onDraw(canvas);
 	}
-	
+
 }

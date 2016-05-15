@@ -1,9 +1,5 @@
 apply plugin: 'com.android.application'
 
-repositories {
-    maven { url 'https://oss.sonatype.org/content/groups/public' }
-}
-
 android {
     compileSdkVersion Integer.valueOf(COMPILE_SDK)
     buildToolsVersion BUILD_TOOLS_VERSION

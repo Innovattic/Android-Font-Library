@@ -20,5 +20,6 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.innovattic:fontlib:4.0.0'
+    compile 'com.innovattic:fontlib-native:5.0.0-SNAPSHOT'
+//    compile project(':lib-native')
 }

@@ -22,7 +22,8 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(':lib-core')
+    compile 'com.innovattic:fontlib-core:' + VERSION_NAME
+//    compile project(':lib-core')
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

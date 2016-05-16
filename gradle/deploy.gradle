@@ -1,3 +1,20 @@
+task checkDependencies() << {
+    project.configurations.compile.dependencies.each {
+        if (it instanceof ProjectDependency) {
+            throw new GradleException(':' + project.name + ' depends on :' +
+                    it.dependencyProject.name + '. This must be rewritten to a maven dependency ' +
+                    'before deployment is possible.')
+        }
+    }
+}
+
+task deploy() {
+    group = 'Upload'
+    description = 'Deploys :' + project.name + ' to Maven Central ' +
+            'and checks if project dependencies are removed'
+    dependsOn('checkDependencies', 'clean', 'uploadArchives')
+}
+
 ext.getVersionName = {
     if (RELEASE == 'true') {
         return VERSION_NAME

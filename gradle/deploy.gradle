@@ -1,0 +1,7 @@
+ext.getVersionName = {
+    if (RELEASE == 'true') {
+        return VERSION_NAME
+    } else {
+        return VERSION_NAME + '-SNAPSHOT'
+    }
+}

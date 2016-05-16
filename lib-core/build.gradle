@@ -1,12 +1,5 @@
 apply plugin: 'com.android.library'
-
-def GIT_BRANCH = 'git rev-parse --abbrev-ref HEAD'.execute().text.trim()
-
-if (GIT_BRANCH == 'master') {
-    // Remove -SNAPSHOT version postfix
-    VERSION_NAME = VERSION_NAME.replace('-SNAPSHOT', '')
-    println('Producing a release version: ' + VERSION_NAME)
-}
+apply from: rootProject.file('gradle/deploy.gradle')
 
 android {
     compileSdkVersion Integer.valueOf(COMPILE_SDK)

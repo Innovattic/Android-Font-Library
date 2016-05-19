@@ -10,8 +10,18 @@ those that want a quickstart, read on below.
 Gradle dependency
 -----------------
 
+If you are using the Android Support Library, use this dependency to use font
+aware `TextView`'s that extend from their AppCompat versions of the support
+library. The support library is not a transitive dependency, so you have to add
+it by yourself.
 ```groovy
-compile 'com.innovattic:fontlib:4.0.0'
+compile 'com.innovattic:fontlib-support:5.0.0'
+```
+
+Otherwise, use the following variant to use the font aware `TextView`'s that
+extend from the native counterparts:
+```groovy
+compile 'com.innovattic:fontlib-native:5.0.0'
 ```
 
 Usage
@@ -76,7 +86,7 @@ In your layout xml files, use any of the font aware TextViews and set its
 </LinearLayout>
 ```
 
-Using a style like this:
+Where the styles used in the last two `FontTextView`'s are defined like this:
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>

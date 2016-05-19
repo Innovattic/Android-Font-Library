@@ -1,0 +1,34 @@
+apply plugin: 'com.android.library'
+apply from: rootProject.file('gradle/deploy.gradle')
+
+android {
+    compileSdkVersion Integer.valueOf(COMPILE_SDK)
+    buildToolsVersion BUILD_TOOLS_VERSION
+
+    defaultConfig {
+        minSdkVersion 7
+        targetSdkVersion Integer.valueOf(TARGET_SDK)
+        versionCode Integer.valueOf(VERSION_CODE)
+        versionName VERSION_NAME
+    }
+}
+
+configurations {
+    // Add provided configuration for use with aar's
+    providedAar
+    // Add the provided aar dependencies to most other configuration by means of inheritance
+    compile.extendsFrom providedAar
+    // But exclude the provided aar dependencies from the default configuration
+    // Note that for now, only maven dependencies are supported
+    providedAar.dependencies.all { dep ->
+        configurations.default.exclude group: dep.group, module: dep.name
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.innovattic:fontlib-core:' + getVersionName()
+    providedAar 'com.android.support:appcompat-v7:23.4.0'
+}
+
+apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

@@ -32,7 +32,7 @@ afterEvaluate { project ->
 
                 pom.groupId = GROUP
                 pom.artifactId = ARTIFACT
-                pom.version = VERSION_NAME + (RELEASE == 'true' ? '' : '-SNAPSHOT')
+                pom.version = getVersionName() // See deploy.gradle
 
                 repository(url: getReleaseRepositoryUrl()) {
                     authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())

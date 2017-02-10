@@ -87,6 +87,22 @@ afterEvaluate { project ->
                         pom.dependencies.removeAll(toRemove)
                     }
                 }
+
+                // Convert project dependencies to maven dependencies
+                // See http://stackoverflow.com/questions/37250675
+                pom.whenConfigured {
+                    final String rootProjectName = rootProject.name
+                    it.dependencies.forEach { dep ->
+                        // Project dependencies can be identified
+                        if (dep.groupId == rootProjectName &&
+                                dep.version == "unspecified") {
+                            println(dep)
+                            dep.groupId = GROUP
+                            dep.version = pom.version
+                            println(dep)
+                        }
+                    }
+                }
             }
         }
     }

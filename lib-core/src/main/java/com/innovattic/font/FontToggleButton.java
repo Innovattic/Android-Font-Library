@@ -27,7 +27,7 @@ public class FontToggleButton extends ToggleButton {
 
 	private final DrawCallback drawCallback = new DrawCallback() {
 		@SuppressLint("WrongCall")
-		@Override public void onDraw(Canvas canvas) {
+		@Override public void onDrawCall(Canvas canvas) {
 			FontToggleButton.super.onDraw(canvas);
 		}
 	};

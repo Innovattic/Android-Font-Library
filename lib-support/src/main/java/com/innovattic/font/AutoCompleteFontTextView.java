@@ -27,7 +27,7 @@ public class AutoCompleteFontTextView extends AppCompatAutoCompleteTextView {
 
 	private final DrawCallback drawCallback = new DrawCallback() {
 		@SuppressLint("WrongCall")
-		@Override public void onDraw(Canvas canvas) {
+		@Override public void onDrawCall(Canvas canvas) {
 			AutoCompleteFontTextView.super.onDraw(canvas);
 		}
 	};

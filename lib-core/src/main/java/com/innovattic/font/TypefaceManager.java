@@ -569,26 +569,12 @@ public class TypefaceManager {
 			target.setTextColor(data.borderColor);
 			paint.setStyle(Paint.Style.STROKE);
 			paint.setStrokeWidth(data.borderWidth);
-			callDrawCallback(drawCallback, canvas);
+			drawCallback.onDrawCall(canvas);
 
 			target.setTextColor(oldTextColors);
 			paint.setStyle(oldStyle);
 			paint.setStrokeWidth(oldStrokeWidth);
 		}
-	}
-
-	/**
-	 * Calls the draw callback with the given canvas. Use this method instead of calling it
-	 * yourself, as lint is fooled by the method name 'onDraw' and thinks we are intervening with
-	 * the render cycle. With this method, we can isolate the suppress lint annotation to the only
-	 * warning we want to suppress.
-	 *
-	 * @param drawCallback
-	 * @param canvas
-	 */
-	@SuppressLint("WrongCall")
-	private static void callDrawCallback(DrawCallback drawCallback, Canvas canvas) {
-		drawCallback.onDraw(canvas);
 	}
 
 	/**
@@ -632,7 +618,7 @@ public class TypefaceManager {
 	}
 
 	public static interface DrawCallback {
-		public void onDraw(Canvas canvas);
+		public void onDrawCall(Canvas canvas);
 	}
 
 }

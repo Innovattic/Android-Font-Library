@@ -27,7 +27,7 @@ public class FontChronometer extends Chronometer {
 
 	private final DrawCallback drawCallback = new DrawCallback() {
 		@SuppressLint("WrongCall")
-		@Override public void onDraw(Canvas canvas) {
+		@Override public void onDrawCall(Canvas canvas) {
 			FontChronometer.super.onDraw(canvas);
 		}
 	};
